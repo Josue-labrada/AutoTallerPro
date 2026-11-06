@@ -1,0 +1,112 @@
+/*
+ * Tokens del sistema visual de AutoTaller Pro.
+ * Todos los componentes deben usar estas variables en lugar de valores fijos.
+ */
+:root {
+  color-scheme: dark;
+
+  /* Superficies (de más profunda a más elevada) */
+  --color-bg: #0b0f17;
+  --color-surface-1: #111723;
+  --color-surface-2: #161e2d;
+  --color-surface-3: #1d2739;
+  --color-overlay: rgb(3 6 12 / 0.65);
+
+  /* Bordes */
+  --color-border: #232e42;
+  --color-border-strong: #33415c;
+
+  /* Texto (contraste AA sobre --color-surface-1) */
+  --color-text: #e8edf6;
+  --color-text-secondary: #b3bfd2;
+  --color-text-muted: #8492a9;
+
+  /* Acentos */
+  --color-accent: #22d3ee;
+  --color-accent-strong: #67e8f9;
+  --color-accent-soft: rgb(34 211 238 / 0.12);
+  --color-accent-blue: #3b82f6;
+  --color-focus: #67e8f9;
+
+  /* Estados de interfaz (siempre acompañados de icono o texto) */
+  --color-info: #60a5fa;
+  --color-info-soft: rgb(96 165 250 / 0.12);
+  --color-warning: #fbbf24;
+  --color-warning-soft: rgb(251 191 36 / 0.12);
+  --color-success: #34d399;
+  --color-success-soft: rgb(52 211 153 / 0.12);
+  --color-danger: #f87171;
+  --color-danger-soft: rgb(248 113 113 / 0.12);
+
+  /*
+   * Colores de las etapas de una orden de trabajo.
+   * Orden validado para separación con daltonismo sobre superficies oscuras.
+   */
+  --color-stage-reception: #3987e5;
+  --color-stage-diagnosis: #c98500;
+  --color-stage-repair: #9085e9;
+  --color-stage-ready: #199e70;
+
+  /* Tipografía */
+  --font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.375rem;
+  --font-size-2xl: 1.75rem;
+  --font-size-3xl: 2.125rem;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+
+  /* Espaciado (escala de 4 px) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Radios */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 999px;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 16px rgb(0 0 0 / 0.28);
+  --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.45);
+
+  /* Movimiento */
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --header-height: 64px;
+  --content-max-width: 1440px;
+
+  /* Capas */
+  --z-header: 20;
+  --z-overlay: 30;
+  --z-sidebar: 40;
+  --z-skip-link: 100;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+  }
+}

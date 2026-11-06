@@ -1,0 +1,44 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build files
+dist/
+build/
+coverage/
+
+# Logs
+*.log
+logs/
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Credentials
+*.pem
+*.key
+*.p12
+credentials.json
+secrets.json
+
+# Database files
+*.sql.gz
+*.dump
+*.backup
+
+# Local storage
+uploads/
+backups/
+minio-data/
+
+# Temporary files
+tmp/
+temp/
