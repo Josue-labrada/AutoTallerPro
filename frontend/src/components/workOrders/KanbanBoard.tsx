@@ -11,7 +11,7 @@ import styles from './KanbanBoard.module.css';
 
 interface KanbanBoardProps {
   orders: readonly WorkOrder[];
-  onAdvance: (orderId: string) => void;
+  onAdvance: (order: WorkOrder) => void;
 }
 
 /** Una columna por etapa; cada tarjeta se avanza con un botón (sin arrastrar). */
@@ -39,7 +39,7 @@ export function KanbanBoard({ orders, onAdvance }: KanbanBoardProps) {
                 <p className={styles.description}>{order.description}</p>
                 <p className={styles.code}>Código: {order.trackingCode}</p>
                 {nextStatus && (
-                  <button type="button" className={styles.advance} onClick={() => onAdvance(order.id)}>
+                  <button type="button" className={styles.advance} onClick={() => onAdvance(order)}>
                     Pasar a {WORK_ORDER_STATUS_LABELS[nextStatus]}
                     <ArrowRight size={14} aria-hidden="true" />
                   </button>

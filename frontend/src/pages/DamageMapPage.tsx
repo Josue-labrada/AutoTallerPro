@@ -18,7 +18,7 @@ export function DamageMapPage() {
   const [reports, setReports] = useState<DamageReport[]>([]);
 
   useEffect(() => {
-    listWorkOrders().then(setOrders);
+    listWorkOrders().then(setOrders).catch(() => setOrders([]));
   }, []);
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 -- Tabla de vehículos registrados en el taller.
-CREATE TABLE vehicles (
+CREATE TABLE IF NOT EXISTS vehicles (
     id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     plate          VARCHAR(10)  NOT NULL UNIQUE,
     brand          VARCHAR(50)  NOT NULL,

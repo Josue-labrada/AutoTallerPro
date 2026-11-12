@@ -16,7 +16,7 @@ export function CostsPage() {
   const [items, setItems] = useState<CostItem[]>([]);
 
   useEffect(() => {
-    listWorkOrders().then(setOrders);
+    listWorkOrders().then(setOrders).catch(() => setOrders([]));
   }, []);
 
   useEffect(() => {

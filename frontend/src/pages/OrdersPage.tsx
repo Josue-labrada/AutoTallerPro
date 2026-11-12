@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Card } from '../components/ui/Card';
-import { DemoDataNotice } from '../components/ui/DemoDataNotice';
 import { PageHeader } from '../components/ui/PageHeader';
 import { KanbanBoard } from '../components/workOrders/KanbanBoard';
 import { NewOrderForm } from '../components/workOrders/NewOrderForm';
@@ -15,7 +14,11 @@ export function OrdersPage() {
   const [boardError, setBoardError] = useState('');
 
   useEffect(() => {
-    listWorkOrders().then(setOrders);
+    listWorkOrders()
+      .then(setOrders)
+      .catch((err: unknown) =>
+        setBoardError(err instanceof Error ? err.message : 'No se pudieron cargar las órdenes.'),
+      );
     listVehicles().then(setVehicles).catch(() => setVehicles([]));
   }, []);
 
@@ -24,10 +27,10 @@ export function OrdersPage() {
     setOrders((current) => [order, ...current]);
   }
 
-  async function handleAdvance(orderId: string) {
+  async function handleAdvance(order: WorkOrder) {
     try {
-      const updated = await advanceWorkOrder(orderId);
-      setOrders((current) => current.map((order) => (order.id === orderId ? updated : order)));
+      const updated = await advanceWorkOrder(order);
+      setOrders((current) => current.map((item) => (item.id === order.id ? updated : item)));
       setBoardError('');
     } catch (err) {
       setBoardError(err instanceof Error ? err.message : 'No se pudo mover la orden.');
@@ -40,7 +43,6 @@ export function OrdersPage() {
         title="Tablero de órdenes"
         description="Órdenes de trabajo por etapa. Cada orden avanza una etapa a la vez."
       />
-      <DemoDataNotice />
       <Card title="Nueva orden">
         <NewOrderForm vehicles={vehicles} onSubmit={handleCreate} />
       </Card>

@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Search } from 'lucide-react';
 import { Card } from '../components/ui/Card';
-import { DemoDataNotice } from '../components/ui/DemoDataNotice';
 import { PageHeader } from '../components/ui/PageHeader';
 import { StatusProgress } from '../components/tracking/StatusProgress';
 import { trackOrder } from '../services/workOrderService';
@@ -31,7 +30,6 @@ export function TrackingPage() {
         title="Seguimiento de tu vehículo"
         description="Consulta el estado de la reparación con el código que te entregó el taller."
       />
-      <DemoDataNotice message="Para probar usa el código ATP-7K3M-9QX2 o ATP-4HTR-2WNB. La placa no sirve para consultar." />
 
       <Card title="Código de seguimiento">
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
