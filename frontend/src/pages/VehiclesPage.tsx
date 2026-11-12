@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Card } from '../components/ui/Card';
-import { DemoDataNotice } from '../components/ui/DemoDataNotice';
 import { PageHeader } from '../components/ui/PageHeader';
 import { VehicleForm } from '../components/vehicles/VehicleForm';
 import { VehicleTable } from '../components/vehicles/VehicleTable';
@@ -10,8 +9,14 @@ import type { Vehicle, VehicleFormValues } from '../types/vehicle';
 export function VehiclesPage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
+  const [loadError, setLoadError] = useState('');
+
   useEffect(() => {
-    listVehicles().then(setVehicles);
+    listVehicles()
+      .then(setVehicles)
+      .catch((err: unknown) =>
+        setLoadError(err instanceof Error ? err.message : 'No se pudieron cargar los vehículos.'),
+      );
   }, []);
 
   async function handleCreate(values: VehicleFormValues) {
@@ -25,7 +30,11 @@ export function VehiclesPage() {
         title="Registro de vehículos"
         description="Registra los vehículos que ingresan al taller."
       />
-      <DemoDataNotice />
+      {loadError && (
+        <p role="alert" style={{ color: 'var(--color-danger)', marginBottom: 'var(--space-4)' }}>
+          {loadError}
+        </p>
+      )}
       <Card title="Nuevo vehículo">
         <VehicleForm onSubmit={handleCreate} />
       </Card>

@@ -151,6 +151,18 @@ Proyecto académico desarrollado por:
 * Paulina Flores Sánchez.
 * Josué Domínguez Labrada.
 
+Cómo correr el proyecto en desarrollo
+
+Requisitos: Node.js 22 y Docker.
+
+1. Copia `.env.example` como `.env` y cambia la contraseña (el `.env` no se sube a Git).
+2. Base de datos: `docker compose up -d` (PostgreSQL en el puerto 5433 de tu computadora).
+3. Datos de ejemplo (opcional): `docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < database/seeds/dev_vehicles.sql`
+4. Backend: `cd backend && npm install && npm run dev` (http://localhost:3000).
+5. Frontend: `cd frontend && npm install && npm run dev` (http://localhost:5173).
+
+Las migraciones de `database/migrations` se ejecutan solo la primera vez que se crea la base. Para empezar de cero: `docker compose down -v`.
+
 Estado del proyecto
 
 Etapa 1: Planificación y diseño arquitectónico.

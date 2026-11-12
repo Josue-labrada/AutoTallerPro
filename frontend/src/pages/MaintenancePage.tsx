@@ -26,7 +26,7 @@ export function MaintenancePage() {
 
   useEffect(() => {
     listMaintenanceItems().then(setItems);
-    listVehicles().then(setVehicles);
+    listVehicles().then(setVehicles).catch(() => setVehicles([]));
   }, []);
 
   async function handleAdd(

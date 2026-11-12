@@ -16,7 +16,7 @@ export function OrdersPage() {
 
   useEffect(() => {
     listWorkOrders().then(setOrders);
-    listVehicles().then(setVehicles);
+    listVehicles().then(setVehicles).catch(() => setVehicles([]));
   }, []);
 
   async function handleCreate(vehicle: Vehicle, description: string) {
