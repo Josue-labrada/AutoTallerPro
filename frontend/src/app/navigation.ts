@@ -65,7 +65,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
     icon: ScanSearch,
     section: 'operativo',
     plannedStage: 4,
-    isAvailable: false,
+    isAvailable: true,
   },
   {
     path: '/servicios',

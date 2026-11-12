@@ -4,6 +4,7 @@ import { DashboardPage } from '../pages/DashboardPage';
 import { ComingSoonPage } from '../pages/ComingSoonPage';
 import { VehiclesPage } from '../pages/VehiclesPage';
 import { OrdersPage } from '../pages/OrdersPage';
+import { DamageMapPage } from '../pages/DamageMapPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { NAV_ITEMS } from './navigation';
 
@@ -21,6 +22,7 @@ export const routes: RouteObject[] = [
       { index: true, element: <DashboardPage /> },
       { path: '/vehiculos', element: <VehiclesPage /> },
       { path: '/ordenes', element: <OrdersPage /> },
+      { path: '/mapeo-danos', element: <DamageMapPage /> },
       ...comingSoonRoutes,
       { path: '*', element: <NotFoundPage /> },
     ],
