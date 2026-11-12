@@ -1,4 +1,4 @@
--- Datos FICTICIOS solo para desarrollo (requiere dev_vehicles.sql).
+-- Datos FICTICIOS solo para desarrollo (requiere 01_dev_vehicles.sql).
 INSERT INTO work_orders (vehicle_id, description, status, tracking_code)
 SELECT id, 'Ruido en la suspensión delantera.', 'EN_DIAGNOSTICO', 'ATP-7K3M-9QX2'
 FROM vehicles WHERE plate = 'ABC-123'

@@ -1,13 +1,15 @@
 import type { CostItem, CostKind } from '../types/cost';
 import { parseMoneyToCents } from '../utils/money';
+import { apiRequest, jsonBody } from './apiClient';
 
-/* Servicio temporal en memoria; luego se reemplazará por llamadas a la API. */
-let items: CostItem[] = [];
-
-export async function listCostItems(orderId: string): Promise<CostItem[]> {
-  return items.filter((item) => item.orderId === orderId);
+export function listCostItems(orderId: string): Promise<CostItem[]> {
+  return apiRequest<CostItem[]>(`/api/work-orders/${orderId}/costs`);
 }
 
+/**
+ * Valida para dar mensajes claros al usuario y envía el precio en centavos (entero).
+ * El backend vuelve a validar todo: nunca confía en el frontend.
+ */
 export async function addCostItem(
   orderId: string,
   kind: CostKind,
@@ -29,18 +31,12 @@ export async function addCostItem(
     throw new Error('El precio debe ser mayor a 0, con máximo 2 decimales (ej. 125.50).');
   }
 
-  const item: CostItem = {
-    id: crypto.randomUUID(),
-    orderId,
-    kind,
-    description: text,
-    quantity,
-    unitPriceCents,
-  };
-  items = [...items, item];
-  return item;
+  return apiRequest<CostItem>(
+    `/api/work-orders/${orderId}/costs`,
+    jsonBody('POST', { kind, description: text, quantity, unitPriceCents }),
+  );
 }
 
-export async function removeCostItem(id: string): Promise<void> {
-  items = items.filter((item) => item.id !== id);
+export async function removeCostItem(orderId: string, id: string): Promise<void> {
+  await apiRequest<undefined>(`/api/work-orders/${orderId}/costs/${id}`, { method: 'DELETE' });
 }
