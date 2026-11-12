@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Card } from '../components/ui/Card';
-import { DemoDataNotice } from '../components/ui/DemoDataNotice';
 import { PageHeader } from '../components/ui/PageHeader';
 import { CostForm } from '../components/costs/CostForm';
 import { CostTable } from '../components/costs/CostTable';
@@ -14,6 +13,7 @@ export function CostsPage() {
   const [orders, setOrders] = useState<WorkOrder[]>([]);
   const [orderId, setOrderId] = useState('');
   const [items, setItems] = useState<CostItem[]>([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     listWorkOrders().then(setOrders).catch(() => setOrders([]));
@@ -21,7 +21,11 @@ export function CostsPage() {
 
   useEffect(() => {
     if (orderId === '') return;
-    listCostItems(orderId).then(setItems);
+    listCostItems(orderId)
+      .then(setItems)
+      .catch((err: unknown) =>
+        setError(err instanceof Error ? err.message : 'No se pudieron cargar los costos.'),
+      );
   }, [orderId]);
 
   async function handleAdd(kind: CostKind, description: string, quantity: string, price: string) {
@@ -30,8 +34,13 @@ export function CostsPage() {
   }
 
   async function handleRemove(id: string) {
-    await removeCostItem(id);
-    setItems((current) => current.filter((item) => item.id !== id));
+    try {
+      await removeCostItem(orderId, id);
+      setItems((current) => current.filter((item) => item.id !== id));
+      setError('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'No se pudo quitar el concepto.');
+    }
   }
 
   return (
@@ -40,7 +49,6 @@ export function CostsPage() {
         title="Servicios y costos"
         description="Registra los servicios y materiales de cada orden y calcula el total."
       />
-      <DemoDataNotice />
 
       <Card title="Orden de trabajo">
         <div className={styles.orderSelect}>
@@ -55,6 +63,12 @@ export function CostsPage() {
           </select>
         </div>
       </Card>
+
+      {error && (
+        <p role="alert" className="stack-gap" style={{ color: 'var(--color-danger)' }}>
+          {error}
+        </p>
+      )}
 
       {orderId !== '' && (
         <>

@@ -20,6 +20,8 @@ export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T
     throw new Error('No se pudo conectar con el servidor. ¿Está encendido el backend?');
   }
   if (!response.ok) throw new Error(await readError(response));
+  // 204 No Content (p. ej. al borrar): no hay cuerpo que leer.
+  if (response.status === 204) return undefined as T;
   return (await response.json()) as T;
 }
 

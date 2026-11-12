@@ -42,3 +42,6 @@ minio-data/
 # Temporary files
 tmp/
 temp/
+
+# Copias de conflicto de sincronización (iCloud/OneDrive), p. ej. "archivo 2.ts"
+* 2.*
