@@ -2,6 +2,7 @@ import type { RouteObject } from 'react-router';
 import { AppLayout } from '../layouts/AppLayout';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ComingSoonPage } from '../pages/ComingSoonPage';
+import { VehiclesPage } from '../pages/VehiclesPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { NAV_ITEMS } from './navigation';
 
@@ -17,6 +18,7 @@ export const routes: RouteObject[] = [
     element: <AppLayout />,
     children: [
       { index: true, element: <DashboardPage /> },
+      { path: '/vehiculos', element: <VehiclesPage /> },
       ...comingSoonRoutes,
       { path: '*', element: <NotFoundPage /> },
     ],

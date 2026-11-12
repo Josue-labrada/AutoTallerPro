@@ -47,7 +47,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
     icon: Car,
     section: 'operativo',
     plannedStage: 2,
-    isAvailable: false,
+    isAvailable: true,
   },
   {
     path: '/ordenes',

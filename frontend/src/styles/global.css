@@ -43,3 +43,8 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Separación vertical entre tarjetas apiladas */
+.stack-gap {
+  margin-top: var(--space-4);
+}
