@@ -1,6 +1,6 @@
 .form {
   display: grid;
-  grid-template-columns: minmax(160px, 1.5fr) minmax(160px, 1.5fr) 160px 160px auto;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: var(--space-4);
   align-items: end;
 }

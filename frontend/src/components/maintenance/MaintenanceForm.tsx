@@ -1,12 +1,20 @@
 import { useState, type FormEvent } from 'react';
 import { Plus } from 'lucide-react';
 import type { Vehicle } from '../../types/vehicle';
+import { todayIsoDate } from '../../utils/vehicleValidation';
 import styles from './MaintenanceForm.module.css';
 
 interface MaintenanceFormProps {
   vehicles: readonly Vehicle[];
   /** Debe lanzar un Error con mensaje legible si falla. */
-  onSubmit: (vehicle: Vehicle, name: string, lastServiceKm: string, intervalKm: string) => Promise<void>;
+  onSubmit: (
+    vehicle: Vehicle,
+    name: string,
+    lastServiceKm: string,
+    intervalKm: string,
+    lastServiceDate: string,
+    intervalMonths: string,
+  ) => Promise<void>;
 }
 
 export function MaintenanceForm({ vehicles, onSubmit }: MaintenanceFormProps) {
@@ -14,6 +22,8 @@ export function MaintenanceForm({ vehicles, onSubmit }: MaintenanceFormProps) {
   const [name, setName] = useState('');
   const [lastServiceKm, setLastServiceKm] = useState('');
   const [intervalKm, setIntervalKm] = useState('');
+  const [lastServiceDate, setLastServiceDate] = useState('');
+  const [intervalMonths, setIntervalMonths] = useState('');
   const [error, setError] = useState('');
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -24,10 +34,12 @@ export function MaintenanceForm({ vehicles, onSubmit }: MaintenanceFormProps) {
       return;
     }
     try {
-      await onSubmit(vehicle, name, lastServiceKm, intervalKm);
+      await onSubmit(vehicle, name, lastServiceKm, intervalKm, lastServiceDate, intervalMonths);
       setName('');
       setLastServiceKm('');
       setIntervalKm('');
+      setLastServiceDate('');
+      setIntervalMonths('');
       setError('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo guardar el mantenimiento.');
@@ -67,6 +79,25 @@ export function MaintenanceForm({ vehicles, onSubmit }: MaintenanceFormProps) {
           inputMode="numeric"
           value={intervalKm}
           onChange={(e) => setIntervalKm(e.target.value)}
+        />
+      </div>
+      <div className={styles.field}>
+        <label htmlFor="mnt-last-date">Fecha del último servicio</label>
+        <input
+          id="mnt-last-date"
+          type="date"
+          max={todayIsoDate()}
+          value={lastServiceDate}
+          onChange={(e) => setLastServiceDate(e.target.value)}
+        />
+      </div>
+      <div className={styles.field}>
+        <label htmlFor="mnt-months">Se repite cada (meses)</label>
+        <input
+          id="mnt-months"
+          inputMode="numeric"
+          value={intervalMonths}
+          onChange={(e) => setIntervalMonths(e.target.value)}
         />
       </div>
       <button type="submit" className={styles.submit}>

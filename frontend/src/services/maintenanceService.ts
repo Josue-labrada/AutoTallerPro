@@ -1,5 +1,6 @@
 import type { MaintenanceItem } from '../types/maintenance';
 import type { Vehicle } from '../types/vehicle';
+import { todayIsoDate } from '../utils/vehicleValidation';
 
 /* Servicio temporal en memoria; luego se reemplazará por llamadas a la API. */
 let items: MaintenanceItem[] = [
@@ -9,6 +10,8 @@ let items: MaintenanceItem[] = [
     name: 'Cambio de aceite',
     lastServiceKm: 60_000,
     intervalKm: 10_000,
+    lastServiceDate: '2026-06-01',
+    intervalMonths: 6,
   },
 ];
 
@@ -21,6 +24,8 @@ export async function addMaintenanceItem(
   name: string,
   lastServiceText: string,
   intervalText: string,
+  lastServiceDate: string,
+  intervalMonthsText: string,
 ): Promise<MaintenanceItem> {
   const text = name.trim();
   if (text === '') throw new Error('Escribe el nombre del mantenimiento.');
@@ -39,12 +44,27 @@ export async function addMaintenanceItem(
     throw new Error('El intervalo debe ser un entero entre 1 y 200,000 km.');
   }
 
+  if (lastServiceDate === '') throw new Error('Indica la fecha del último servicio.');
+  if (lastServiceDate > todayIsoDate()) throw new Error('La fecha del último servicio no puede ser futura.');
+
+  const intervalMonths = Number(intervalMonthsText);
+  if (
+    intervalMonthsText.trim() === '' ||
+    !Number.isInteger(intervalMonths) ||
+    intervalMonths < 1 ||
+    intervalMonths > 120
+  ) {
+    throw new Error('El intervalo en meses debe ser un entero entre 1 y 120.');
+  }
+
   const item: MaintenanceItem = {
     id: crypto.randomUUID(),
     vehicleId: vehicle.id,
     name: text,
     lastServiceKm,
     intervalKm,
+    lastServiceDate,
+    intervalMonths,
   };
   items = [...items, item];
   return item;
