@@ -3,6 +3,7 @@ import { AppLayout } from '../layouts/AppLayout';
 import { DashboardPage } from '../pages/DashboardPage';
 import { ComingSoonPage } from '../pages/ComingSoonPage';
 import { VehiclesPage } from '../pages/VehiclesPage';
+import { OrdersPage } from '../pages/OrdersPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { NAV_ITEMS } from './navigation';
 
@@ -19,6 +20,7 @@ export const routes: RouteObject[] = [
     children: [
       { index: true, element: <DashboardPage /> },
       { path: '/vehiculos', element: <VehiclesPage /> },
+      { path: '/ordenes', element: <OrdersPage /> },
       ...comingSoonRoutes,
       { path: '*', element: <NotFoundPage /> },
     ],

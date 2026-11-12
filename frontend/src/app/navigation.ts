@@ -56,7 +56,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
     icon: SquareKanban,
     section: 'operativo',
     plannedStage: 3,
-    isAvailable: false,
+    isAvailable: true,
   },
   {
     path: '/mapeo-danos',

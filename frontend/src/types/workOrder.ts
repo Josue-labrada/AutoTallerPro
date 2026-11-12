@@ -19,3 +19,20 @@ export const WORK_ORDER_STATUS_LABELS: Readonly<Record<WorkOrderStatus, string>>
 };
 
 export type WorkOrderStatusCounts = Readonly<Record<WorkOrderStatus, number>>;
+
+/** Orden de trabajo de un vehículo. */
+export interface WorkOrder {
+  id: string;
+  vehiclePlate: string;
+  vehicleLabel: string;
+  description: string;
+  status: WorkOrderStatus;
+  /** Fecha de creación en formato ISO 8601. */
+  createdAt: string;
+}
+
+/** Siguiente etapa permitida; `null` si la orden ya está en la última. */
+export function getNextStatus(status: WorkOrderStatus): WorkOrderStatus | null {
+  const index = WORK_ORDER_STATUSES.indexOf(status);
+  return WORK_ORDER_STATUSES[index + 1] ?? null;
+}
