@@ -6,6 +6,7 @@ import { VehiclesPage } from '../pages/VehiclesPage';
 import { OrdersPage } from '../pages/OrdersPage';
 import { DamageMapPage } from '../pages/DamageMapPage';
 import { CostsPage } from '../pages/CostsPage';
+import { FuelCalculatorPage } from '../pages/FuelCalculatorPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { NAV_ITEMS } from './navigation';
 
@@ -25,6 +26,7 @@ export const routes: RouteObject[] = [
       { path: '/ordenes', element: <OrdersPage /> },
       { path: '/mapeo-danos', element: <DamageMapPage /> },
       { path: '/servicios', element: <CostsPage /> },
+      { path: '/portal/combustible', element: <FuelCalculatorPage /> },
       ...comingSoonRoutes,
       { path: '*', element: <NotFoundPage /> },
     ],
