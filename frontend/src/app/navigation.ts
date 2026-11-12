@@ -83,7 +83,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
     icon: Route,
     section: 'cliente',
     plannedStage: 6,
-    isAvailable: false,
+    isAvailable: true,
   },
   {
     path: '/portal/combustible',

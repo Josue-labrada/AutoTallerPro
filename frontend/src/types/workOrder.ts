@@ -27,6 +27,8 @@ export interface WorkOrder {
   vehicleLabel: string;
   description: string;
   status: WorkOrderStatus;
+  /** Código secreto que el taller entrega al cliente para consultar su orden. */
+  trackingCode: string;
   /** Fecha de creación en formato ISO 8601. */
   createdAt: string;
 }

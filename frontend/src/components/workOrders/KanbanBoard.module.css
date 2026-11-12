@@ -84,3 +84,10 @@
 .advance:hover {
   background: var(--color-accent-soft);
 }
+
+.code {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  user-select: all;
+}

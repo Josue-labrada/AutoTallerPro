@@ -8,6 +8,7 @@ import { DamageMapPage } from '../pages/DamageMapPage';
 import { CostsPage } from '../pages/CostsPage';
 import { FuelCalculatorPage } from '../pages/FuelCalculatorPage';
 import { MaintenancePage } from '../pages/MaintenancePage';
+import { TrackingPage } from '../pages/TrackingPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { NAV_ITEMS } from './navigation';
 
@@ -29,6 +30,7 @@ export const routes: RouteObject[] = [
       { path: '/servicios', element: <CostsPage /> },
       { path: '/portal/combustible', element: <FuelCalculatorPage /> },
       { path: '/portal/mantenimiento', element: <MaintenancePage /> },
+      { path: '/portal/seguimiento', element: <TrackingPage /> },
       ...comingSoonRoutes,
       { path: '*', element: <NotFoundPage /> },
     ],
