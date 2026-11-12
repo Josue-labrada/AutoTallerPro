@@ -101,7 +101,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
     icon: BellRing,
     section: 'cliente',
     plannedStage: 7,
-    isAvailable: false,
+    isAvailable: true,
   },
 ];
 
