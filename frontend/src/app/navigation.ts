@@ -74,7 +74,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
     icon: ReceiptText,
     section: 'operativo',
     plannedStage: 5,
-    isAvailable: false,
+    isAvailable: true,
   },
   {
     path: '/portal/seguimiento',
