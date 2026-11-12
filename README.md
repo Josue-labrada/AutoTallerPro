@@ -151,17 +151,25 @@ Proyecto académico desarrollado por:
 * Paulina Flores Sánchez.
 * Josué Domínguez Labrada.
 
-Cómo correr el proyecto en desarrollo
+Cómo correr el proyecto (opción fácil)
+
+Requisito: tener Docker Desktop instalado (https://www.docker.com/products/docker-desktop).
+
+* macOS: haz doble clic en `iniciar.command` (si macOS lo bloquea la primera vez: clic derecho, Abrir).
+* Windows: haz doble clic en `iniciar.bat`.
+
+El archivo instala Node.js si falta (Homebrew en Mac, winget en Windows), crea el `.env` con una contraseña aleatoria, enciende PostgreSQL, instala las dependencias, prepara la base de datos con datos de ejemplo, arranca el backend y el frontend y abre http://localhost:5173. Para detener todo, presiona Ctrl+C en esa ventana.
+
+Cómo correrlo a mano
 
 Requisitos: Node.js 22 y Docker.
 
 1. Copia `.env.example` como `.env` y cambia la contraseña (el `.env` no se sube a Git).
 2. Base de datos: `docker compose up -d` (PostgreSQL en el puerto 5433 de tu computadora).
-3. Datos de ejemplo (opcional): `docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < database/seeds/dev_vehicles.sql`
-4. Backend: `cd backend && npm install && npm run dev` (http://localhost:3000).
-5. Frontend: `cd frontend && npm install && npm run dev` (http://localhost:5173).
+3. Backend: `cd backend && npm install && npm run migrate && npm run seed && npm run dev` (http://localhost:3000).
+4. Frontend: `cd frontend && npm install && npm run dev` (http://localhost:5173).
 
-Las migraciones de `database/migrations` se ejecutan solo la primera vez que se crea la base. Para empezar de cero: `docker compose down -v`.
+`npm run migrate` aplica las migraciones de `database/migrations` que falten. `npm run seed` carga datos ficticios de desarrollo. Para empezar de cero: `docker compose down -v`.
 
 Estado del proyecto
 
