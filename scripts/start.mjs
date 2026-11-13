@@ -67,14 +67,38 @@ function parseEnvFile(file) {
   return values;
 }
 
-/** Crea el .env con una contraseña aleatoria propia de esta computadora (nunca se sube a Git). */
+/**
+ * Crea el .env con contraseñas aleatorias propias de esta computadora (nunca se sube a Git).
+ * Si el .env ya existe, solo le agrega las variables nuevas que falten (sin tocar las que ya tiene).
+ */
 function ensureEnvFile() {
   const envPath = path.join(ROOT, '.env');
-  if (existsSync(envPath)) return;
-  log('Creando archivo .env con una contraseña aleatoria…');
-  const password = randomBytes(12).toString('hex');
-  const example = readFileSync(path.join(ROOT, '.env.example'), 'utf8');
-  writeFileSync(envPath, example.replaceAll('cambia_esta_contrasena', password));
+  const exampleLines = readFileSync(path.join(ROOT, '.env.example'), 'utf8').split(/\r?\n/);
+
+  // Cada marcador (p. ej. cambia_esta_contrasena_db) recibe una contraseña distinta, repetida donde aparezca.
+  const secrets = new Map();
+  const fillSecrets = (line) =>
+    line.replace(/cambia_esta_contrasena_[a-z]+/g, (placeholder) => {
+      if (!secrets.has(placeholder)) secrets.set(placeholder, randomBytes(12).toString('hex'));
+      return secrets.get(placeholder);
+    });
+
+  if (!existsSync(envPath)) {
+    log('Creando archivo .env con contraseñas aleatorias…');
+    writeFileSync(envPath, exampleLines.map(fillSecrets).join('\n'));
+    return;
+  }
+
+  const current = parseEnvFile(envPath);
+  const missing = exampleLines.filter((line) => {
+    const match = /^([A-Z_]+)=/.exec(line);
+    return match && !(match[1] in current);
+  });
+  if (missing.length > 0) {
+    log('Agregando al .env las variables nuevas (almacenamiento de fotos)…');
+    const content = readFileSync(envPath, 'utf8');
+    writeFileSync(envPath, `${content.replace(/\s*$/, '')}\n${missing.map(fillSecrets).join('\n')}\n`);
+  }
 }
 
 function isPortFree(port) {
@@ -100,6 +124,18 @@ async function waitForDatabase(user) {
     await sleep(2000);
   }
   fail('La base de datos no arrancó a tiempo. Revisa con: docker compose logs db');
+}
+
+async function waitForMinio() {
+  for (let seconds = 0; seconds < 60; seconds += 2) {
+    try {
+      if ((await fetch('http://127.0.0.1:9000/minio/health/live')).ok) return;
+    } catch {
+      // Todavía arrancando.
+    }
+    await sleep(2000);
+  }
+  console.error('\n⚠ MinIO (fotos) no respondió; el resto funcionará, pero las fotos de daños no. Revisa: docker compose logs minio');
 }
 
 const children = [];
@@ -174,11 +210,12 @@ async function main() {
   ensureEnvFile();
   await ensurePortsFree();
 
-  log('Encendiendo la base de datos (PostgreSQL en Docker)…');
+  log('Encendiendo la base de datos y el almacenamiento de fotos (PostgreSQL y MinIO en Docker)…');
   if (!run('docker', ['compose', 'up', '-d'])) {
-    fail('No se pudo iniciar la base de datos. Si el puerto 5433 está ocupado, cierra el programa que lo usa.');
+    fail('No se pudo iniciar Docker Compose. Si los puertos 5433, 9000 o 9001 están ocupados, cierra el programa que los usa.');
   }
   await waitForDatabase(parseEnvFile(path.join(ROOT, '.env')).POSTGRES_USER ?? 'autotaller');
+  await waitForMinio();
 
   log('Instalando dependencias del backend…');
   if (!run('npm', ['install', '--no-audit', '--no-fund'], { cwd: path.join(ROOT, 'backend') })) fail('Falló npm install en backend.');

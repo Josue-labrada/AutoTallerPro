@@ -1,6 +1,7 @@
 import express from 'express';
 import helmet from 'helmet';
 import { costRoutes } from '../modules/costs/cost.routes.js';
+import { damageRoutes } from '../modules/damages/damage.routes.js';
 import { errorHandler } from '../middleware/errorHandler.js';
 import { maintenanceRoutes } from '../modules/maintenance/maintenance.routes.js';
 import { trackingRoutes } from '../modules/tracking/tracking.routes.js';
@@ -19,6 +20,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/work-orders', workOrderRoutes);
 app.use('/api/work-orders/:orderId/costs', costRoutes);
+app.use('/api/work-orders/:orderId/damages', damageRoutes);
 app.use('/api/tracking', trackingRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
 
