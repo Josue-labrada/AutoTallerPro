@@ -1,0 +1,55 @@
+.steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.done .marker {
+  background: var(--step-color);
+  border-color: var(--step-color);
+  color: #fff;
+}
+
+.current .marker {
+  border-color: var(--step-color);
+  color: var(--step-color);
+  box-shadow: 0 0 0 4px var(--color-surface-3);
+}
+
+.label {
+  font-weight: var(--font-weight-medium);
+}
+
+.pending .label {
+  color: var(--color-text-muted);
+}
+
+.state {
+  margin-left: auto;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.current .state {
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
+}

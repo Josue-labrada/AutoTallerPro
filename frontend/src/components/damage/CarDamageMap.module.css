@@ -1,0 +1,37 @@
+.map {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.axisLabel {
+  fill: var(--color-text-muted);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.zone {
+  fill: var(--color-surface-3);
+  stroke: var(--color-border-strong);
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: fill var(--duration-fast) var(--ease-standard);
+}
+
+.zone:hover {
+  fill: var(--color-accent-soft);
+  stroke: var(--color-accent);
+}
+
+.damaged {
+  fill: var(--color-danger-soft);
+  stroke: var(--color-danger);
+}
+
+.selected {
+  fill: var(--color-accent-soft);
+  stroke: var(--color-accent);
+  stroke-width: 3;
+}

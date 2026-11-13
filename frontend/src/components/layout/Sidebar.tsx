@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { NavLink } from 'react-router';
 import { Wrench, X } from 'lucide-react';
-import { NAV_ITEMS, NAV_SECTIONS } from '../../app/navigation';
+import { NAV_ITEMS, NAV_SECTIONS, canAccess } from '../../app/navigation';
+import { useAuth } from '../../app/useAuth';
 import styles from './Sidebar.module.css';
 
 export const SIDEBAR_ID = 'app-sidebar';
@@ -17,6 +18,8 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, onClose, onNavigate }: SidebarProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const { user } = useAuth();
+  const visibleItems = NAV_ITEMS.filter((item) => canAccess(user, item));
 
   useEffect(() => {
     if (isOpen) closeButtonRef.current?.focus();
@@ -47,13 +50,15 @@ export function Sidebar({ isOpen, onClose, onNavigate }: SidebarProps) {
       </div>
 
       <nav className={styles.nav} aria-label="Navegación principal">
-        {NAV_SECTIONS.map((section) => (
+        {NAV_SECTIONS.filter((section) =>
+          visibleItems.some((item) => item.section === section.id),
+        ).map((section) => (
           <div key={section.id} className={styles.section}>
             <p className={styles.sectionLabel} id={`nav-section-${section.id}`}>
               {section.label}
             </p>
             <ul aria-labelledby={`nav-section-${section.id}`}>
-              {NAV_ITEMS.filter((item) => item.section === section.id).map((item) => {
+              {visibleItems.filter((item) => item.section === section.id).map((item) => {
                 const Icon = item.icon;
                 return (
                   <li key={item.path}>
@@ -67,7 +72,6 @@ export function Sidebar({ isOpen, onClose, onNavigate }: SidebarProps) {
                     >
                       <Icon size={18} aria-hidden="true" className={styles.linkIcon} />
                       <span className={styles.linkLabel}>{item.label}</span>
-                      {!item.isAvailable && <span className={styles.soonTag}>Pronto</span>}
                     </NavLink>
                   </li>
                 );
@@ -77,7 +81,7 @@ export function Sidebar({ isOpen, onClose, onNavigate }: SidebarProps) {
         ))}
       </nav>
 
-      <p className={styles.footer}>Versión de demostración · Etapa 1</p>
+      <p className={styles.footer}>Gestión de talleres mecánicos</p>
     </aside>
   );
 }

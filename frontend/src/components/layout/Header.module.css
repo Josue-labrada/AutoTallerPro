@@ -127,3 +127,33 @@
     display: none;
   }
 }
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-3);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.action:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+/* Enlaces de invitado: a diferencia de .user, se mantienen visibles en móvil para poder iniciar sesión. */
+.guest {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--color-border);
+}

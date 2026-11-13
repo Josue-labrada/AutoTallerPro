@@ -151,6 +151,37 @@ Proyecto académico desarrollado por:
 * Paulina Flores Sánchez.
 * Josué Domínguez Labrada.
 
+Cómo correr el proyecto (opción fácil)
+
+Requisito: tener Docker Desktop instalado (https://www.docker.com/products/docker-desktop).
+
+* macOS: haz doble clic en `iniciar.command` (si macOS lo bloquea la primera vez: clic derecho, Abrir).
+* Windows: haz doble clic en `iniciar.bat`.
+
+El archivo instala Node.js si falta (Homebrew en Mac, winget en Windows), crea el `.env` con una contraseña aleatoria, enciende PostgreSQL y MinIO, instala las dependencias, prepara la base de datos con datos de ejemplo, arranca el backend y el frontend y abre http://localhost:5173. Para detener todo, presiona Ctrl+C en esa ventana.
+
+Cómo correrlo a mano
+
+Requisitos: Node.js 22 y Docker.
+
+1. Copia `.env.example` como `.env` y cambia la contraseña (el `.env` no se sube a Git).
+2. Servicios: `docker compose up -d` (PostgreSQL en el puerto 5433 y MinIO, para las fotos, en el 9000; su consola web está en http://localhost:9001 con el usuario y la contraseña de tu `.env`).
+3. Backend: `cd backend && npm install && npm run migrate && npm run seed && npm run dev` (http://localhost:3000).
+4. Frontend: `cd frontend && npm install && npm run dev` (http://localhost:5173).
+
+`npm run migrate` aplica las migraciones de `database/migrations` que falten. `npm run seed` carga datos ficticios de desarrollo. Para empezar de cero: `docker compose down -v` (borra también las fotos).
+
+Nota sobre MinIO: desde octubre de 2025 el proyecto MinIO ya no publica imágenes de Docker, por eso `docker-compose.yml` usa la imagen gratuita de Chainguard (`cgr.dev/chainguard/minio`), que es MinIO compilado desde su código fuente oficial.
+
+Cuentas y roles
+
+* Invitado (sin cuenta): calculadora de combustible y seguimiento de una orden con su código.
+* Cliente: se registra solo desde la pantalla "Crear cuenta", vincula su vehículo con el código de seguimiento que le da el taller y ve las alertas de mantenimiento de SUS vehículos.
+* Trabajador: panel operativo (vehículos, órdenes, daños, costos y mantenimientos).
+* Administrador: todo lo del trabajador y además crea o elimina cuentas del personal (menú Usuarios).
+
+El primer administrador se crea solo con `ADMIN_EMAIL` y `ADMIN_PASSWORD` de tu `.env` (`npm run create-admin`; el lanzador lo hace por ti y te dice el correo). Los permisos los aplica el backend en cada petición; el frontend solo oculta lo que no te corresponde. Las contraseñas se guardan con hash `scrypt` y la sesión viaja en una cookie `HttpOnly`.
+
 Estado del proyecto
 
 Etapa 1: Planificación y diseño arquitectónico.

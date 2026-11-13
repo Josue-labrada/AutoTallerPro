@@ -1,0 +1,35 @@
+{
+  "name": "autotaller-pro-backend",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch --env-file=../.env src/app/server.ts",
+    "build": "tsc",
+    "start": "node --env-file=../.env dist/app/server.js",
+    "typecheck": "tsc --noEmit",
+    "migrate": "tsx --env-file=../.env src/config/migrate.ts",
+    "seed": "tsx --env-file=../.env src/config/seed.ts",
+    "create-admin": "tsx --env-file=../.env src/config/createAdmin.ts"
+  },
+  "description": "API de AutoTaller Pro",
+  "private": "true",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.3.0",
+    "helmet": "^8.3.0",
+    "minio": "^8.0.7",
+    "multer": "^2.5.0",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.3.0",
+    "@types/node": "^22.20.5",
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3"
+  },
+  "engines": {
+    "node": "^22.12.0 || >=24.0.0"
+  }
+}

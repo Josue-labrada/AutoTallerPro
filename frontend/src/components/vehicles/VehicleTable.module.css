@@ -1,0 +1,33 @@
+.wrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.table th {
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+.plate {
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+}
+
+.notes {
+  white-space: normal !important;
+  color: var(--color-text-secondary);
+  min-width: 200px;
+}
