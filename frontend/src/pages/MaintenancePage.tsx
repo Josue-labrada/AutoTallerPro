@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Card } from '../components/ui/Card';
-import { DemoDataNotice } from '../components/ui/DemoDataNotice';
 import { PageHeader } from '../components/ui/PageHeader';
 import { MaintenanceAlertList } from '../components/maintenance/MaintenanceAlertList';
 import { MaintenanceForm } from '../components/maintenance/MaintenanceForm';
@@ -23,9 +22,14 @@ import { formatNumber } from '../utils/formatters';
 export function MaintenancePage() {
   const [items, setItems] = useState<MaintenanceItem[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    listMaintenanceItems().then(setItems);
+    listMaintenanceItems()
+      .then(setItems)
+      .catch((err: unknown) =>
+        setError(err instanceof Error ? err.message : 'No se pudieron cargar los mantenimientos.'),
+      );
     listVehicles().then(setVehicles).catch(() => setVehicles([]));
   }, []);
 
@@ -49,8 +53,13 @@ export function MaintenancePage() {
   }
 
   async function handleRemove(id: string) {
-    await removeMaintenanceItem(id);
-    setItems((current) => current.filter((item) => item.id !== id));
+    try {
+      await removeMaintenanceItem(id);
+      setItems((current) => current.filter((item) => item.id !== id));
+      setError('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'No se pudo quitar el mantenimiento.');
+    }
   }
 
   return (
@@ -59,7 +68,11 @@ export function MaintenancePage() {
         title="Alertas de mantenimiento"
         description={`Se revisan kilómetros y fecha, y manda el más grave. Km: verde más de ${formatNumber(YELLOW_THRESHOLD_KM)}, amarillo ${formatNumber(RED_THRESHOLD_KM)}–${formatNumber(YELLOW_THRESHOLD_KM)}, rojo menos de ${formatNumber(RED_THRESHOLD_KM)} o vencido. Días: verde más de ${YELLOW_THRESHOLD_DAYS}, amarillo ${RED_THRESHOLD_DAYS}–${YELLOW_THRESHOLD_DAYS}, rojo menos de ${RED_THRESHOLD_DAYS} o vencido.`}
       />
-      <DemoDataNotice />
+      {error && (
+        <p role="alert" style={{ color: 'var(--color-danger)', marginBottom: 'var(--space-4)' }}>
+          {error}
+        </p>
+      )}
       <Card title="Programar mantenimiento">
         <MaintenanceForm vehicles={vehicles} onSubmit={handleAdd} />
       </Card>

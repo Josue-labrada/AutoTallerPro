@@ -158,18 +158,20 @@ Requisito: tener Docker Desktop instalado (https://www.docker.com/products/docke
 * macOS: haz doble clic en `iniciar.command` (si macOS lo bloquea la primera vez: clic derecho, Abrir).
 * Windows: haz doble clic en `iniciar.bat`.
 
-El archivo instala Node.js si falta (Homebrew en Mac, winget en Windows), crea el `.env` con una contraseña aleatoria, enciende PostgreSQL, instala las dependencias, prepara la base de datos con datos de ejemplo, arranca el backend y el frontend y abre http://localhost:5173. Para detener todo, presiona Ctrl+C en esa ventana.
+El archivo instala Node.js si falta (Homebrew en Mac, winget en Windows), crea el `.env` con una contraseña aleatoria, enciende PostgreSQL y MinIO, instala las dependencias, prepara la base de datos con datos de ejemplo, arranca el backend y el frontend y abre http://localhost:5173. Para detener todo, presiona Ctrl+C en esa ventana.
 
 Cómo correrlo a mano
 
 Requisitos: Node.js 22 y Docker.
 
 1. Copia `.env.example` como `.env` y cambia la contraseña (el `.env` no se sube a Git).
-2. Base de datos: `docker compose up -d` (PostgreSQL en el puerto 5433 de tu computadora).
+2. Servicios: `docker compose up -d` (PostgreSQL en el puerto 5433 y MinIO, para las fotos, en el 9000; su consola web está en http://localhost:9001 con el usuario y la contraseña de tu `.env`).
 3. Backend: `cd backend && npm install && npm run migrate && npm run seed && npm run dev` (http://localhost:3000).
 4. Frontend: `cd frontend && npm install && npm run dev` (http://localhost:5173).
 
-`npm run migrate` aplica las migraciones de `database/migrations` que falten. `npm run seed` carga datos ficticios de desarrollo. Para empezar de cero: `docker compose down -v`.
+`npm run migrate` aplica las migraciones de `database/migrations` que falten. `npm run seed` carga datos ficticios de desarrollo. Para empezar de cero: `docker compose down -v` (borra también las fotos).
+
+Nota sobre MinIO: desde octubre de 2025 el proyecto MinIO ya no publica imágenes de Docker, por eso `docker-compose.yml` usa la imagen gratuita de Chainguard (`cgr.dev/chainguard/minio`), que es MinIO compilado desde su código fuente oficial.
 
 Estado del proyecto
 

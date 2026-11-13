@@ -1,16 +1,15 @@
 import type { DamageReport, DamageZone } from '../types/damage';
 import { validateDescription, validatePhoto } from '../utils/damageValidation';
+import { apiRequest } from './apiClient';
 
-/*
- * Servicio temporal en memoria. Cuando exista el backend (y MinIO), la foto se subirá
- * al servidor; por ahora solo se guarda una URL temporal del navegador.
- */
-let reports: DamageReport[] = [];
-
-export async function listDamages(orderId: string): Promise<DamageReport[]> {
-  return reports.filter((report) => report.orderId === orderId);
+export function listDamages(orderId: string): Promise<DamageReport[]> {
+  return apiRequest<DamageReport[]>(`/api/work-orders/${orderId}/damages`);
 }
 
+/**
+ * Valida para dar mensajes claros y sube el daño (con foto opcional) al backend como formulario.
+ * El backend vuelve a validar todo, incluido el tipo REAL de la imagen.
+ */
 export async function addDamage(
   orderId: string,
   zone: DamageZone,
@@ -25,15 +24,11 @@ export async function addDamage(
     if (photoError) throw new Error(photoError);
   }
 
-  const report: DamageReport = {
-    id: crypto.randomUUID(),
-    orderId,
-    zone,
-    description: description.trim(),
-    photoUrl: photo ? URL.createObjectURL(photo) : null,
-    photoName: photo ? photo.name : null,
-    createdAt: new Date().toISOString(),
-  };
-  reports = [report, ...reports];
-  return report;
+  const form = new FormData();
+  form.append('zone', zone);
+  form.append('description', description.trim());
+  if (photo) form.append('photo', photo);
+
+  // Sin cabecera Content-Type: el navegador la agrega con el separador correcto del formulario.
+  return apiRequest<DamageReport>(`/api/work-orders/${orderId}/damages`, { method: 'POST', body: form });
 }

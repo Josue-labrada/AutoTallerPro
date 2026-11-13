@@ -8,4 +8,11 @@ function required(name: string): string {
 export const env = {
   port: Number(process.env['PORT'] ?? 3000),
   databaseUrl: required('DATABASE_URL'),
+  minio: {
+    endPoint: process.env['MINIO_ENDPOINT'] ?? 'localhost',
+    port: Number(process.env['MINIO_PORT'] ?? 9000),
+    accessKey: required('MINIO_ROOT_USER'),
+    secretKey: required('MINIO_ROOT_PASSWORD'),
+    bucket: process.env['MINIO_BUCKET'] ?? 'autotaller-fotos',
+  },
 };

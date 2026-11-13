@@ -1,4 +1,4 @@
-# Por ahora solo PostgreSQL. El backend y el frontend se corren con npm en desarrollo.
+# PostgreSQL (datos) y MinIO (fotos). El backend y el frontend se corren con npm en desarrollo.
 services:
   db:
     image: postgres:17-alpine
@@ -18,5 +18,23 @@ services:
       timeout: 3s
       retries: 10
 
+  minio:
+    # Almacenamiento de archivos (fotos de daños), compatible con S3 y 100% local.
+    # MinIO ya no publica imágenes en Docker Hub (desde oct. 2025); se usa la imagen gratuita de
+    # Chainguard, que es MinIO compilado desde el código fuente oficial.
+    image: cgr.dev/chainguard/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      # API para el backend y consola web de administración: solo desde tu propia computadora.
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - minio-data:/data
+
 volumes:
   db-data:
+  minio-data:

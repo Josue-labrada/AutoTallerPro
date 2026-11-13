@@ -34,8 +34,7 @@ export interface DamageReport {
   orderId: string;
   zone: DamageZone;
   description: string;
-  /** URL temporal de la foto (solo válida mientras la página siga abierta). */
+  /** Dirección de la foto en el backend, o `null` si el daño no tiene foto. */
   photoUrl: string | null;
-  photoName: string | null;
   createdAt: string;
 }

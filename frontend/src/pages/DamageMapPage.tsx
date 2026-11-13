@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Card } from '../components/ui/Card';
-import { DemoDataNotice } from '../components/ui/DemoDataNotice';
 import { PageHeader } from '../components/ui/PageHeader';
 import { CarDamageMap } from '../components/damage/CarDamageMap';
 import { DamageForm } from '../components/damage/DamageForm';
@@ -16,6 +15,7 @@ export function DamageMapPage() {
   const [orderId, setOrderId] = useState('');
   const [zone, setZone] = useState<DamageZone | null>(null);
   const [reports, setReports] = useState<DamageReport[]>([]);
+  const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
     listWorkOrders().then(setOrders).catch(() => setOrders([]));
@@ -23,7 +23,11 @@ export function DamageMapPage() {
 
   useEffect(() => {
     if (orderId === '') return;
-    listDamages(orderId).then(setReports);
+    listDamages(orderId)
+      .then(setReports)
+      .catch((err: unknown) =>
+        setLoadError(err instanceof Error ? err.message : 'No se pudieron cargar los daños.'),
+      );
   }, [orderId]);
 
   const damagedZones = useMemo(() => new Set(reports.map((report) => report.zone)), [reports]);
@@ -40,7 +44,6 @@ export function DamageMapPage() {
         title="Mapeo de daños"
         description="Selecciona la orden y marca en el diagrama dónde está el daño."
       />
-      <DemoDataNotice />
 
       <Card title="Orden de trabajo">
         <div className={styles.orderSelect}>
@@ -62,6 +65,12 @@ export function DamageMapPage() {
           </select>
         </div>
       </Card>
+
+      {loadError && (
+        <p role="alert" className="stack-gap" style={{ color: 'var(--color-danger)' }}>
+          {loadError}
+        </p>
+      )}
 
       {orderId !== '' && (
         <>
