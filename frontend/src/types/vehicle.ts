@@ -11,6 +11,9 @@ export interface Vehicle {
   notes: string;
 }
 
+/** Lo que ve el dueño de un vehículo (sin observaciones internas del taller). */
+export type VehicleSummary = Pick<Vehicle, 'id' | 'plate' | 'brand' | 'model' | 'year' | 'mileage'>;
+
 /** Datos tal como se escriben en el formulario (todo texto). */
 export interface VehicleFormValues {
   plate: string;

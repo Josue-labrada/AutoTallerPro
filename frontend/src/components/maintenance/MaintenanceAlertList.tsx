@@ -1,6 +1,6 @@
 import { CircleCheck, OctagonAlert, Trash2, TriangleAlert } from 'lucide-react';
 import type { AlertLevel, MaintenanceItem } from '../../types/maintenance';
-import type { Vehicle } from '../../types/vehicle';
+import type { VehicleSummary } from '../../types/vehicle';
 import {
   getAlertLevel,
   getDaysAlertLevel,
@@ -15,8 +15,9 @@ import styles from './MaintenanceAlertList.module.css';
 
 interface MaintenanceAlertListProps {
   items: readonly MaintenanceItem[];
-  vehicles: readonly Vehicle[];
-  onRemove: (id: string) => void;
+  vehicles: readonly VehicleSummary[];
+  /** Sin esta función (portal del cliente) la lista es de solo lectura. */
+  onRemove?: (id: string) => void;
 }
 
 const LEVEL_APPEARANCE: Readonly<Record<AlertLevel, { tone: BadgeTone; label: string; icon: typeof CircleCheck }>> = {
@@ -69,14 +70,16 @@ export function MaintenanceAlertList({ items, vehicles, onRemove }: MaintenanceA
                 {days >= 0 ? `faltan ${formatNumber(days)} días` : `vencido por ${formatNumber(-days)} días`}
               </p>
             </div>
-            <button
-              type="button"
-              className={styles.remove}
-              onClick={() => onRemove(item.id)}
-              aria-label={`Quitar ${item.name} de ${vehicle.plate}`}
-            >
-              <Trash2 size={16} aria-hidden="true" />
-            </button>
+            {onRemove && (
+              <button
+                type="button"
+                className={styles.remove}
+                onClick={() => onRemove(item.id)}
+                aria-label={`Quitar ${item.name} de ${vehicle.plate}`}
+              >
+                <Trash2 size={16} aria-hidden="true" />
+              </button>
+            )}
           </li>
         );
       })}

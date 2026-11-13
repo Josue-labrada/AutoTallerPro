@@ -173,6 +173,15 @@ Requisitos: Node.js 22 y Docker.
 
 Nota sobre MinIO: desde octubre de 2025 el proyecto MinIO ya no publica imágenes de Docker, por eso `docker-compose.yml` usa la imagen gratuita de Chainguard (`cgr.dev/chainguard/minio`), que es MinIO compilado desde su código fuente oficial.
 
+Cuentas y roles
+
+* Invitado (sin cuenta): calculadora de combustible y seguimiento de una orden con su código.
+* Cliente: se registra solo desde la pantalla "Crear cuenta", vincula su vehículo con el código de seguimiento que le da el taller y ve las alertas de mantenimiento de SUS vehículos.
+* Trabajador: panel operativo (vehículos, órdenes, daños, costos y mantenimientos).
+* Administrador: todo lo del trabajador y además crea o elimina cuentas del personal (menú Usuarios).
+
+El primer administrador se crea solo con `ADMIN_EMAIL` y `ADMIN_PASSWORD` de tu `.env` (`npm run create-admin`; el lanzador lo hace por ti y te dice el correo). Los permisos los aplica el backend en cada petición; el frontend solo oculta lo que no te corresponde. Las contraseñas se guardan con hash `scrypt` y la sesión viaja en una cookie `HttpOnly`.
+
 Estado del proyecto
 
 Etapa 1: Planificación y diseño arquitectónico.
