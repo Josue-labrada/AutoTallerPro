@@ -1,9 +1,10 @@
 import type { Ref } from 'react';
-import { useLocation } from 'react-router';
-import { CalendarDays, FlaskConical, Menu, UserRound } from 'lucide-react';
+import { Link, useLocation } from 'react-router';
+import { CalendarDays, LogOut, Menu, UserRound } from 'lucide-react';
 import { findNavItem, getSectionLabel } from '../../app/navigation';
+import { useAuth } from '../../app/useAuth';
+import { ROLE_LABELS } from '../../types/auth';
 import { formatLongDate } from '../../utils/formatters';
-import { Badge } from '../ui/Badge';
 import { SIDEBAR_ID } from './Sidebar';
 import styles from './Header.module.css';
 
@@ -16,6 +17,7 @@ interface HeaderProps {
 export function Header({ isSidebarOpen, onToggleSidebar, menuButtonRef }: HeaderProps) {
   const { pathname } = useLocation();
   const currentItem = findNavItem(pathname);
+  const { user, logout } = useAuth();
 
   return (
     <header className={styles.header}>
@@ -53,18 +55,32 @@ export function Header({ isSidebarOpen, onToggleSidebar, menuButtonRef }: Header
           <CalendarDays size={16} aria-hidden="true" />
           {formatLongDate(new Date())}
         </span>
-        <Badge tone="warning" icon={<FlaskConical size={12} />}>
-          Modo demostración
-        </Badge>
-        <span className={styles.user} title="Sesión simulada: aún no hay autenticación">
-          <span className={styles.avatar} aria-hidden="true">
-            <UserRound size={16} />
+        {user ? (
+          <>
+            <span className={styles.user}>
+              <span className={styles.avatar} aria-hidden="true">
+                <UserRound size={16} />
+              </span>
+              <span className={styles.userText}>
+                <span className={styles.userName}>{user.name}</span>
+                <span className={styles.userRole}>{ROLE_LABELS[user.role]}</span>
+              </span>
+            </span>
+            <button type="button" className={styles.action} onClick={() => void logout()}>
+              <LogOut size={16} aria-hidden="true" />
+              Cerrar sesión
+            </button>
+          </>
+        ) : (
+          <span className={styles.guest}>
+            <Link to="/iniciar-sesion" className={styles.action}>
+              Iniciar sesión
+            </Link>
+            <Link to="/registro" className={styles.action}>
+              Crear cuenta
+            </Link>
           </span>
-          <span className={styles.userText}>
-            <span className={styles.userName}>Usuario demo</span>
-            <span className={styles.userRole}>Sin sesión real</span>
-          </span>
-        </span>
+        )}
       </div>
     </header>
   );

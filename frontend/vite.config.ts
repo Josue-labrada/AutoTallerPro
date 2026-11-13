@@ -9,7 +9,7 @@ export default defineConfig({
     port: 5173,
     // El frontend pide /api/... y Vite lo reenvía al backend (evita problemas de CORS en desarrollo).
     proxy: {
-      '/api': 'http://localhost:3000',
+      '/api': process.env['API_URL'] ?? 'http://localhost:3000',
     },
   },
   build: {

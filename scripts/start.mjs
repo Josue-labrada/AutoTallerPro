@@ -228,13 +228,18 @@ async function main() {
     fail('No se pudo preparar la base de datos. Si cambiaste la contraseña del .env después de crearla, ejecuta: docker compose down -v  y vuelve a intentar.');
   }
   run('npm', ['run', 'seed'], { cwd: backend });
+  // Primer administrador (solo se crea si todavía no hay usuarios).
+  if (!run('npm', ['run', 'create-admin'], { cwd: backend })) fail('No se pudo crear el administrador inicial.');
 
   log('Arrancando el backend y el frontend…');
   startServer('backend', 'backend');
   startServer('frontend', 'frontend');
 
   if (await waitForFrontend()) {
-    console.log(`\n✔ Todo listo. Abre ${FRONTEND_URL}\n  Para detener todo: presiona Ctrl+C en esta ventana.\n`);
+    const adminEnv = parseEnvFile(path.join(ROOT, '.env'));
+    console.log(`\n✔ Todo listo. Abre ${FRONTEND_URL}`);
+    console.log(`  Administrador:  ${adminEnv.ADMIN_EMAIL}   (contraseña en tu archivo .env, variable ADMIN_PASSWORD)`);
+    console.log('  Para detener todo: presiona Ctrl+C en esta ventana.\n');
     openBrowser();
   } else {
     console.error('\n✖ El frontend no respondió a tiempo. Revisa los mensajes de arriba.');

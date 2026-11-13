@@ -8,7 +8,8 @@
     "start": "node --env-file=../.env dist/app/server.js",
     "typecheck": "tsc --noEmit",
     "migrate": "tsx --env-file=../.env src/config/migrate.ts",
-    "seed": "tsx --env-file=../.env src/config/seed.ts"
+    "seed": "tsx --env-file=../.env src/config/seed.ts",
+    "create-admin": "tsx --env-file=../.env src/config/createAdmin.ts"
   },
   "description": "API de AutoTaller Pro",
   "private": "true",
