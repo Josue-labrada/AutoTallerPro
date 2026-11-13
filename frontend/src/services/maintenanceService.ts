@@ -1,24 +1,16 @@
 import type { MaintenanceItem } from '../types/maintenance';
 import type { Vehicle } from '../types/vehicle';
 import { todayIsoDate } from '../utils/vehicleValidation';
+import { apiRequest, jsonBody } from './apiClient';
 
-/* Servicio temporal en memoria; luego se reemplazará por llamadas a la API. */
-let items: MaintenanceItem[] = [
-  {
-    id: 'mnt-1',
-    vehicleId: 'demo-1',
-    name: 'Cambio de aceite',
-    lastServiceKm: 60_000,
-    intervalKm: 10_000,
-    lastServiceDate: '2026-06-01',
-    intervalMonths: 6,
-  },
-];
-
-export async function listMaintenanceItems(): Promise<MaintenanceItem[]> {
-  return [...items];
+export function listMaintenanceItems(): Promise<MaintenanceItem[]> {
+  return apiRequest<MaintenanceItem[]>('/api/maintenance');
 }
 
+/**
+ * Valida para dar mensajes claros al usuario y envía los datos al backend,
+ * que vuelve a validar todo (nunca confía en el frontend).
+ */
 export async function addMaintenanceItem(
   vehicle: Vehicle,
   name: string,
@@ -57,19 +49,19 @@ export async function addMaintenanceItem(
     throw new Error('El intervalo en meses debe ser un entero entre 1 y 120.');
   }
 
-  const item: MaintenanceItem = {
-    id: crypto.randomUUID(),
-    vehicleId: vehicle.id,
-    name: text,
-    lastServiceKm,
-    intervalKm,
-    lastServiceDate,
-    intervalMonths,
-  };
-  items = [...items, item];
-  return item;
+  return apiRequest<MaintenanceItem>(
+    '/api/maintenance',
+    jsonBody('POST', {
+      vehicleId: vehicle.id,
+      name: text,
+      lastServiceKm,
+      intervalKm,
+      lastServiceDate,
+      intervalMonths,
+    }),
+  );
 }
 
 export async function removeMaintenanceItem(id: string): Promise<void> {
-  items = items.filter((item) => item.id !== id);
+  await apiRequest<undefined>(`/api/maintenance/${id}`, { method: 'DELETE' });
 }

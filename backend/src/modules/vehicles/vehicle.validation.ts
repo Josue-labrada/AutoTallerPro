@@ -1,20 +1,9 @@
+import { isRealIsoDate, todayIsoDate } from '../../shared/dates.js';
 import type { NewVehicle } from './vehicle.model.js';
 
 const MIN_YEAR = 1950;
 const MAX_MILEAGE = 2_000_000;
 const PLATE_PATTERN = /^[A-Z0-9][A-Z0-9 -]{3,9}$/;
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-
-function todayIsoDate(now: Date): string {
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${now.getFullYear()}-${month}-${day}`;
-}
-
-function isRealDate(isoDate: string): boolean {
-  const date = new Date(`${isoDate}T00:00:00Z`);
-  return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(isoDate);
-}
 
 export type ValidationResult =
   | { ok: true; value: NewVehicle }
@@ -62,11 +51,7 @@ export function validateNewVehicle(body: unknown, now: Date = new Date()): Valid
   }
 
   const receptionDate = data['receptionDate'];
-  if (
-    typeof receptionDate !== 'string' ||
-    !DATE_PATTERN.test(receptionDate) ||
-    !isRealDate(receptionDate)
-  ) {
+  if (typeof receptionDate !== 'string' || !isRealIsoDate(receptionDate)) {
     return { ok: false, message: 'La fecha de recepción no es válida (AAAA-MM-DD).' };
   }
   if (receptionDate > todayIsoDate(now)) {
