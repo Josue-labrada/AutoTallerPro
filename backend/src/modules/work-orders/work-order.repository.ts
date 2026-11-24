@@ -88,11 +88,23 @@ export async function updateOrderStatus(
       await client.query('ROLLBACK');
       return null;
     }
+    // US12: una orden cerrada no permite cambios de estado.
+    // Se comprueba después del FOR UPDATE para evitar condiciones de carrera.
+    const closure = await client.query(
+      'SELECT 1 FROM work_order_closures WHERE work_order_id = $1',
+      [id],
+    );
+
+    if (closure.rows[0]) {
+      const { HttpError } = await import('../../middleware/errorHandler.js');
+      throw new HttpError(409, 'La orden está cerrada y no permite cambios de estado.');
+    }
+
     const problem = decide(currentStatus);
     if (problem) {
-      await client.query('ROLLBACK');
       throw problem;
     }
+
     await client.query('UPDATE work_orders SET status = $2, updated_at = now() WHERE id = $1', [id, newStatus]);
     await client.query('COMMIT');
   } catch (error) {

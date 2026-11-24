@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
+import { ApiError } from '../services/apiClient';
 import { Card } from '../components/ui/Card';
 import { PageHeader } from '../components/ui/PageHeader';
 import { CostForm } from '../components/costs/CostForm';
 import { CostTable } from '../components/costs/CostTable';
 import { addCostItem, listCostItems, removeCostItem } from '../services/costService';
-import { listWorkOrders } from '../services/workOrderService';
+import { getWorkOrderClosure, listWorkOrders } from '../services/workOrderService';
 import type { CostItem, CostKind } from '../types/cost';
 import type { WorkOrder } from '../types/workOrder';
 import styles from './CostsPage.module.css';
@@ -14,18 +15,53 @@ export function CostsPage() {
   const [orderId, setOrderId] = useState('');
   const [items, setItems] = useState<CostItem[]>([]);
   const [error, setError] = useState('');
+  const [isClosed, setIsClosed] = useState(false);
+  const [checkingClosure, setCheckingClosure] = useState(false);
 
   useEffect(() => {
     listWorkOrders().then(setOrders).catch(() => setOrders([]));
   }, []);
 
   useEffect(() => {
-    if (orderId === '') return;
-    listCostItems(orderId)
-      .then(setItems)
-      .catch((err: unknown) =>
-        setError(err instanceof Error ? err.message : 'No se pudieron cargar los costos.'),
-      );
+    let cancelled = false;
+
+    setItems([]);
+    setIsClosed(false);
+    setError('');
+
+    if (orderId === '') {
+      setCheckingClosure(false);
+      return;
+    }
+
+    setCheckingClosure(true);
+
+    Promise.allSettled([
+      listCostItems(orderId),
+      getWorkOrderClosure(orderId),
+    ]).then(([costsResult, closureResult]) => {
+      if (cancelled) return;
+
+      if (costsResult.status === 'fulfilled') {
+        setItems(costsResult.value);
+      } else {
+        setError('No se pudieron cargar los costos.');
+      }
+
+      if (closureResult.status === 'fulfilled') {
+        setIsClosed(true);
+      } else if (closureResult.reason instanceof ApiError && closureResult.reason.status === 404) {
+        setIsClosed(false);
+      } else {
+        setError('No se pudo comprobar si la orden está cerrada.');
+      }
+
+      setCheckingClosure(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [orderId]);
 
   async function handleAdd(kind: CostKind, description: string, quantity: string, price: string) {
@@ -72,12 +108,23 @@ export function CostsPage() {
 
       {orderId !== '' && (
         <>
-          <Card title="Agregar concepto" className="stack-gap">
-            <CostForm onSubmit={handleAdd} />
-          </Card>
-          <Card title="Detalle de costos" className="stack-gap">
-            <CostTable items={items} onRemove={handleRemove} />
-          </Card>
+          {checkingClosure ? (
+            <p role="status">Comprobando estado de la orden…</p>
+          ) : (
+            <>
+              {isClosed && (
+                <p role="status">Orden cerrada: los costos son de solo lectura.</p>
+              )}
+              {!isClosed && (
+                <Card title="Agregar concepto" className="stack-gap">
+                  <CostForm onSubmit={handleAdd} />
+                </Card>
+              )}
+              <Card title="Detalle de costos" className="stack-gap">
+                <CostTable items={items} onRemove={handleRemove} readOnly={isClosed} />
+              </Card>
+            </>
+          )}
         </>
       )}
     </>

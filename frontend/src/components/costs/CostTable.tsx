@@ -6,9 +6,10 @@ import styles from './CostTable.module.css';
 interface CostTableProps {
   items: readonly CostItem[];
   onRemove: (id: string) => void;
+  readOnly?: boolean;
 }
 
-export function CostTable({ items, onRemove }: CostTableProps) {
+export function CostTable({ items, onRemove, readOnly = false }: CostTableProps) {
   if (items.length === 0) {
     return <p className={styles.empty}>Esta orden aún no tiene servicios ni materiales.</p>;
   }
@@ -37,14 +38,16 @@ export function CostTable({ items, onRemove }: CostTableProps) {
               <td className={styles.number}>{formatCents(item.unitPriceCents)}</td>
               <td className={styles.number}>{formatCents(subtotals[index] ?? 0)}</td>
               <td>
-                <button
-                  type="button"
-                  className={styles.remove}
-                  onClick={() => onRemove(item.id)}
-                  aria-label={`Quitar ${item.description}`}
-                >
-                  <Trash2 size={16} aria-hidden="true" />
-                </button>
+                {!readOnly && (
+                  <button
+                    type="button"
+                    className={styles.remove}
+                    onClick={() => onRemove(item.id)}
+                    aria-label={`Quitar ${item.description}`}
+                  >
+                    <Trash2 size={16} aria-hidden="true" />
+                  </button>
+                )}
               </td>
             </tr>
           ))}

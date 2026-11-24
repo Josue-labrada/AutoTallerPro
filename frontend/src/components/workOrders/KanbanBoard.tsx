@@ -12,10 +12,16 @@ import styles from './KanbanBoard.module.css';
 interface KanbanBoardProps {
   orders: readonly WorkOrder[];
   onAdvance: (order: WorkOrder) => void;
+  onClose?: (order: WorkOrder) => void;
+  canClose?: boolean;
+  closedOrderIds?: ReadonlySet<string>;
 }
 
 /** Una columna por etapa; cada tarjeta se avanza con un botón (sin arrastrar). */
-export function KanbanBoard({ orders, onAdvance }: KanbanBoardProps) {
+export function KanbanBoard({
+  orders, onAdvance, onClose, canClose = false,
+  closedOrderIds = new Set<string>(),
+}: KanbanBoardProps) {
   return (
     <div className={styles.board}>
       {WORK_ORDER_STATUSES.map((status) => {
@@ -38,7 +44,17 @@ export function KanbanBoard({ orders, onAdvance }: KanbanBoardProps) {
                 <p className={styles.vehicle}>{order.vehicleLabel}</p>
                 <p className={styles.description}>{order.description}</p>
                 <p className={styles.code}>Código: {order.trackingCode}</p>
-                {nextStatus && (
+                {closedOrderIds.has(order.id) && (
+                  <p>Orden cerrada</p>
+                )}
+                {canClose && onClose && status === 'LISTO_PARA_ENTREGA'
+                  && !closedOrderIds.has(order.id) && (
+                  <button type="button" className={styles.advance}
+                    onClick={() => onClose(order)}>
+                    Cerrar orden
+                  </button>
+                )}
+                {nextStatus && !closedOrderIds.has(order.id) && (
                   <button type="button" className={styles.advance} onClick={() => onAdvance(order)}>
                     Pasar a {WORK_ORDER_STATUS_LABELS[nextStatus]}
                     <ArrowRight size={14} aria-hidden="true" />

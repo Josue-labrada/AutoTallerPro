@@ -1,3 +1,4 @@
+import type { OrderClosure } from '../types/orderClosure';
 import type { TrackingInfo } from '../types/tracking';
 import type { Vehicle } from '../types/vehicle';
 import { getNextStatus, type WorkOrder } from '../types/workOrder';
@@ -28,4 +29,17 @@ export function trackOrder(code: string): Promise<TrackingInfo> {
     return Promise.reject(new Error('No encontramos una orden con ese código. Revísalo e intenta de nuevo.'));
   }
   return apiRequest<TrackingInfo>(`/api/tracking/${encodeURIComponent(normalizeTrackingCode(code))}`);
+}
+
+/** US12: cierra una orden lista para entrega. Solo ADMIN. */
+export function closeWorkOrder(orderId: string): Promise<OrderClosure> {
+  return apiRequest<OrderClosure>(
+    `/api/work-orders/${orderId}/close`,
+    jsonBody('POST', {}),
+  );
+}
+
+/** US12: consulta el resumen persistido de una orden cerrada. */
+export function getWorkOrderClosure(orderId: string): Promise<OrderClosure> {
+  return apiRequest<OrderClosure>(`/api/work-orders/${orderId}/closure`);
 }
