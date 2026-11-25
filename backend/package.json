@@ -2,7 +2,10 @@
   "name": "autotaller-pro-backend",
   "version": "1.0.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:coverage": "vitest run --coverage",
     "dev": "tsx watch --env-file=../.env src/app/server.ts",
     "build": "tsc",
     "start": "node --env-file=../.env dist/app/server.js",
@@ -26,8 +29,12 @@
     "@types/multer": "^2.3.0",
     "@types/node": "^22.20.5",
     "@types/pg": "^8.23.1",
+    "@types/supertest": "^7.2.1",
+    "@vitest/coverage-v8": "^5.1.1",
+    "supertest": "^7.3.2",
     "tsx": "^4.23.15",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "^5.1.1"
   },
   "engines": {
     "node": "^22.12.0 || >=24.0.0"
